@@ -69,12 +69,44 @@ router.put("/:collection/:id",function(req,res,next){
     var obj = req.body;
     req.c.update({_id:id}, {$set:obj}, function(err, results){
         if(err){
-            res.send({succes:false});
+            res.send({success:false});
         }else{
-            res.send({succes:true});
+            res.send({success:true});
         }
     });
 
+});
+
+//Agregar un item a un arreglo
+//Body: {campo: obj} o {campo: [objs]}
+//Ejemplo {"celulares":"325"}
+router.put("/:collection/:id/push", function(req, res, next){
+    var id = new mId(req.params.id);
+    var obj = req.body;
+
+    req.c.update({_id:id},{$push:obj}, function(err, result){
+        if(err){
+            res.send({success:false});
+        }else{
+            res.send({success:true});
+        }
+    });
+
+});
+
+//Eliminar un item de un arreglo
+
+router.put("/:collection/:id/pull", function(req, res, next){
+    var id = new mId(req.params.id);
+    var obj = req.body;
+
+    req.c.update({_id:id}, {$pull:obj}, function(err, result){
+        if(err){
+            res.send({success:false});
+        }else{
+            res.send({success:true});
+        }
+    });
 });
 
 
