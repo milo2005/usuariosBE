@@ -40,7 +40,32 @@ router.delete("/:collection/:id", function(req, res, next){
 
 //GET obtener recursos
 router.get("/:collection", function(req, res, next){
-    req.c.find().toArray(function(err, results){
+    var q = req.query.q;
+    var limit = req.query.limit;
+    var skip = req.query.skip;
+    var sort = req.query.sort;
+
+    if(q){
+        q = JSON.parse(q);
+    }
+
+    if(limit){
+        limit = parseInt(limit);
+    }else{
+        limit = 0;
+    }
+
+    if(skip){
+        skip = parseInt(skip);
+    }else{
+        skip = 0;
+    }
+
+    if(sort){
+        sort = JSON.parse(sort);
+    }
+
+    req.c.find(q).limit(limit).skip(skip).sort(sort).toArray(function(err, results){
         if(err){
             res.send([]);
         }else{
@@ -83,7 +108,6 @@ router.put("/:collection/:id",function(req,res,next){
 router.put("/:collection/:id/push", function(req, res, next){
     var id = new mId(req.params.id);
     var obj = req.body;
-
     req.c.update({_id:id},{$push:obj}, function(err, result){
         if(err){
             res.send({success:false});
@@ -91,15 +115,14 @@ router.put("/:collection/:id/push", function(req, res, next){
             res.send({success:true});
         }
     });
-
 });
 
 //Eliminar un item de un arreglo
-
+//Body: {campo:{criterio}}, {campo:valor}
+// Ejemplo {"celulares":"301"}, {"mascotas":{"nombre":"luna"}}
 router.put("/:collection/:id/pull", function(req, res, next){
     var id = new mId(req.params.id);
     var obj = req.body;
-
     req.c.update({_id:id}, {$pull:obj}, function(err, result){
         if(err){
             res.send({success:false});
