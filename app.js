@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb').MongoClient;
+var settings = require("./settings/settings");
 
 //Importamos las rutas | Apis
 var usuarios = require("./routes/usuarios");
@@ -13,7 +14,7 @@ var api = require("./routes/api");
 var app = express();
 
 var mDB;
-mongo.connect("mongodb://localhost:27017/usuariosDB",function(err,db){
+mongo.connect(settings.database,function(err,db){
   if(err){
     console.log("Error al conectarse a mongo");
   }else{

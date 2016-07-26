@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var mId = require("mongodb").ObjectId; //Sirve para crear objetos de Indentificadores
+var validateToken = require("../util/validate-token");
 
 //Middleware que se ejecuta cada que llega el parametro
 //collection en la url
@@ -10,7 +11,7 @@ router.param("collection", function(req, res, next, c){
 });
 
 //Post: publicar recurso
-router.post("/:collection", function(req, res, next){
+router.post("/:collection", validateToken, function(req, res, next){
     var obj = req.body; //Obtenemos el objeto a insertar
     //Insertamos el obj en mongo, w:1 requerimos una 
     // confirmacion (function)
@@ -26,7 +27,7 @@ router.post("/:collection", function(req, res, next){
 });
 
 //DELETE: eliminar recurso
-router.delete("/:collection/:id", function(req, res, next){
+router.delete("/:collection/:id", validateToken, function(req, res, next){
     var id = new mId(req.params.id);
     req.c.deleteOne({_id:id}, function(err, result){
         if(err){
@@ -39,7 +40,7 @@ router.delete("/:collection/:id", function(req, res, next){
 
 
 //GET obtener recursos
-router.get("/:collection", function(req, res, next){
+router.get("/:collection", validateToken,  function(req, res, next){
     var q = req.query.q;
     var limit = req.query.limit;
     var skip = req.query.skip;
@@ -74,7 +75,7 @@ router.get("/:collection", function(req, res, next){
     });
 });
 
-router.get("/:collection/:id", function(req, res, next){
+router.get("/:collection/:id", validateToken, function(req, res, next){
     var id = new mId(req.params.id);
     req.c.findOne({_id:id}, function(err, result){
 
@@ -89,7 +90,7 @@ router.get("/:collection/:id", function(req, res, next){
 
 });
 
-router.put("/:collection/:id",function(req,res,next){
+router.put("/:collection/:id",validateToken, function(req,res,next){
     var id =  new mId(req.params.id);
     var obj = req.body;
     req.c.update({_id:id}, {$set:obj}, function(err, results){
@@ -105,7 +106,7 @@ router.put("/:collection/:id",function(req,res,next){
 //Agregar un item a un arreglo
 //Body: {campo: obj} o {campo: [objs]}
 //Ejemplo {"celulares":"325"}
-router.put("/:collection/:id/push", function(req, res, next){
+router.put("/:collection/:id/push",validateToken,  function(req, res, next){
     var id = new mId(req.params.id);
     var obj = req.body;
     req.c.update({_id:id},{$push:obj}, function(err, result){
@@ -120,7 +121,7 @@ router.put("/:collection/:id/push", function(req, res, next){
 //Eliminar un item de un arreglo
 //Body: {campo:{criterio}}, {campo:valor}
 // Ejemplo {"celulares":"301"}, {"mascotas":{"nombre":"luna"}}
-router.put("/:collection/:id/pull", function(req, res, next){
+router.put("/:collection/:id/pull",validateToken,  function(req, res, next){
     var id = new mId(req.params.id);
     var obj = req.body;
     req.c.update({_id:id}, {$pull:obj}, function(err, result){
