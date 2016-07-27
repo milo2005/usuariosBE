@@ -26,7 +26,8 @@ router.post("/signin", function(req, res, next){
     var auth = body.auth;
 
     //Desencriptamos auth con la llave "cualquiercosa"
-    auth = ""+crypto.AES.decrypt(auth, settings.secret);
+    auth = crypto.AES.decrypt(auth, settings.secret);
+    auth = auth.toString(crypto.enc.Utf8);
     //Separando la cadena en cada &&
     auth = auth.split("&&");
 
@@ -59,7 +60,8 @@ router.post("/login", function(req,res,next){
     var auth = body.auth;
 
     
-    auth = ""+crypto.AES.decrypt(auth,settings.secret);
+    auth = crypto.AES.decrypt(auth,settings.secret);
+    auth = auth.toString(crypto.enc.Utf8);
     auth = auth.split("&&");
 
     //Obtenemos el tercer campo que corresponde al timestamp de cuando 

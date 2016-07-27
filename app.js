@@ -14,7 +14,7 @@ var api = require("./routes/api");
 var app = express();
 
 var mDB;
-mongo.connect(settings.database,function(err,db){
+mongo.connect(""+settings.database,function(err,db){
   if(err){
     console.log("Error al conectarse a mongo");
   }else{
