@@ -41,7 +41,7 @@ router.post("/signin", function(req, res, next){
     body.usuario = auth[0];
     //Obtenemos el password y se lo asignamos al objeto
     // Encriptamos con SHA la contraseña para que no sea entendible
-    body.password = ""+crypto.SHA(auth[1]);
+    body.password = ""+crypto.SHA256(auth[1]);
     //Insertamos el objeto
     req.c.insert(body, function(err, result){
         if(err){
