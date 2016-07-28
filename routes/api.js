@@ -5,17 +5,17 @@ var validateToken = require("../util/validate-token");
 
 //Middleware que se ejecuta cada que llega el parametro
 //collection en la url
-router.param("collection", function(req, res, next, c){
+router.param("collection", validateToken,function(req, res, next, c){
     req.c = req.db.collection(c);
     next(); //Continuamos en la siguiente etapa
 });
 
 //Post: publicar recurso
-router.post("/:collection", validateToken, function(req, res, next){
+router.post("/:collection", validateToken,function(req, res, next){
     var obj = req.body; //Obtenemos el objeto a insertar
     //Insertamos el obj en mongo, w:1 requerimos una 
     // confirmacion (function)
-    req.c.insert(obj,{w:1},function(err, result){
+    req.c.insert(obj,{w:1}, function(err, result){
         if(err){
             //ERROR!, notificamos que no fue exitoso
            res.send({success:false}); 
@@ -40,7 +40,7 @@ router.delete("/:collection/:id", validateToken, function(req, res, next){
 
 
 //GET obtener recursos
-router.get("/:collection", validateToken,  function(req, res, next){
+router.get("/:collection",  function(req, res, next){
     var q = req.query.q;
     var limit = req.query.limit;
     var skip = req.query.skip;

@@ -14,12 +14,14 @@ var router = express.Router();
 // la solicutd
 router.use(function(req,res,next){
     req.c = req.db.collection("usuarios");
+    next();
 });
 
 //API para el registro de usuarios
 // el cuerpo del usuario debe tener el campo auth
 // auth = usuario&&password -> encriptado en AES
 router.post("/signin", function(req, res, next){
+
     //Obtenemos el body de la solicitud
     var body = req.body;
     //Obtenemos auth
@@ -48,6 +50,7 @@ router.post("/signin", function(req, res, next){
             res.send({success:true});
         }
     });
+    
 });
 
 

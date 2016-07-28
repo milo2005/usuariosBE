@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb').MongoClient;
+var cors = require("cors");
+
 var settings = require("./settings/settings");
 
 //Importamos las rutas | Apis
@@ -23,6 +25,8 @@ mongo.connect(""+settings.database,function(err,db){
   }
 });
 
+app.use(cors());
+
 app.use(function(req, res, next){
   req.db = mDB;
   next();
@@ -40,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use("/usuarios",usuarios);
+app.use("/apix/usuarios",usuarios);
 app.use("/api", api);
 
 // catch 404 and forward to error handler
